@@ -1,0 +1,88 @@
+<html lang="en"><head>
+        <title>Introduction - vue.js</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+        <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600|Roboto Mono" rel="stylesheet" type="text/css">
+        <link href="http://fonts.googleapis.com/css?family=Dosis:500&amp;text=Vue.js" rel="stylesheet" type="text/css">
+
+        <!-- main page styles -->
+        <link rel="stylesheet" href="css/style.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+		<link rel="stylesheet" href="https://code.getmdl.io/1.2.1/material.indigo-pink.min.css">
+		<script defer src="https://code.getmdl.io/1.2.1/material.min.js"></script>
+
+        <!-- this needs to be loaded before guide's inline scripts -->
+       <script src="js/vue.js"></script>
+    </head>
+    <body>   
+	    <div id="app">
+
+			<div class="mdl-grid">
+			  <div class="mdl-cell  mdl-cell--12-col mdl-cell--12-col-tablet">
+			  	<h1>Hello from vue</h1>
+			  	<input
+					    v-model="search"
+					    v-on:keyup.enter="checkItems"
+					    placeholder="find an item"
+					  >
+			  </div>
+			</div>			
+			<div class="mdl-grid">
+			  <div class="mdl-cell  mdl-cell--12-col mdl-cell--12-col-tablet">
+				  <ol>
+				    <display-item v-for="item in items"  v-if="item.seen" v-bind:display="item"></display-item>
+				  </ol>
+			  </div>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript">
+	var contains = function(needle) {
+	    // Per spec, the way to identify NaN is that it is not equal to itself
+	    var findNaN = needle !== needle;
+	    var indexOf;
+
+        var i = -1, index = -1;
+
+        for(i = 0; i < this.length; i++) {
+            var item = this[i];
+
+            if((findNaN && item.title !== item.title) || item.title === needle) {
+                index = i;
+                break;
+            }
+        }
+        return index;	    
+	};
+
+		Vue.component('display-item', {
+		  props: ['display'],
+		  template: '<li>{{ display.title }}</li>'
+		})
+
+		var app = new Vue({
+		  el: '#app',
+		  data: {
+		  	search : '',
+		    items: [
+		      { seen: false, title: 'Ken' },
+		      { seen: false, title: 'Ryu' },
+		      { seen: false, title: 'Chun-li' }
+		    ]
+		  },
+	      methods: {
+		    checkItems: function () {
+		    	index = contains.call(this.items, this.search);
+		    	if(index != -1){
+		    		this.items[index].seen = true;
+		    	} else {
+		    		console.log('nay')
+		    	}
+		      this.search = ''
+		    }
+		  }
+		})
+	</script>
+</html>
