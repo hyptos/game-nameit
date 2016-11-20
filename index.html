@@ -1,14 +1,10 @@
 <html lang="en"><head>
-        <title>Introduction - vue.js</title>
+        <title>Game - Name it</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-        <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600|Roboto Mono" rel="stylesheet" type="text/css">
-        <link href="http://fonts.googleapis.com/css?family=Dosis:500&amp;text=Vue.js" rel="stylesheet" type="text/css">
-
         <!-- main page styles -->
-        <link rel="stylesheet" href="css/style.css">
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 		<link rel="stylesheet" href="https://code.getmdl.io/1.2.1/material.indigo-pink.min.css">
 		<script defer src="https://code.getmdl.io/1.2.1/material.min.js"></script>
@@ -17,28 +13,63 @@
        <script src="js/vue.js"></script>
     </head>
     <body>   
-	    <div id="app">
-
+<!-- Always shows a header, even in smaller screens. -->
+<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+  <header class="mdl-layout__header">
+    <div class="mdl-layout__header-row">
+      <!-- Title -->
+      <span class="mdl-layout-title">Title</span>
+      <!-- Add spacer, to align navigation to the right -->
+      <div class="mdl-layout-spacer"></div>
+      <!-- Navigation. We hide it in small screens. -->
+      <nav class="mdl-navigation mdl-layout--large-screen-only">
+        <a class="mdl-navigation__link" href="#about">about</a>
+      </nav>
+    </div>
+  </header>
+  <div class="mdl-layout__drawer">
+    <span class="mdl-layout-title">Title</span>
+    <nav class="mdl-navigation">
+      <a class="mdl-navigation__link" href="#about">about</a>
+    </nav>
+  </div>
+  <main class="mdl-layout__content">
+    <div class="page-content">
+    	<div id="app">
 			<div class="mdl-grid">
 			  <div class="mdl-cell  mdl-cell--12-col mdl-cell--12-col-tablet">
-			  	<h1>Hello from vue</h1>
-			  	<input
-					    v-model="search"
+			  	<h3>
+			  		{{title}}
+			  	</h3>
+			  	<p>{{description}}</p>
+			  	<p><span>{{cptSeen}} items found on {{this.items.length}} : {{getTimeSeconds()}}</span></p>
+
+			  	  <div class="mdl-textfield mdl-js-textfield">
+    <input class="mdl-textfield__input" type="text" id="search" 					   
+    					v-model="search"
 					    v-on:keyup.enter="checkItems"
-					    placeholder="find an item"
-					  >
+					    placeholder="find an item">
+
+    <label class="mdl-textfield__label" for="search">Text...</label>
+  </div>
 			  </div>
 			</div>			
 			<div class="mdl-grid">
 			  <div class="mdl-cell  mdl-cell--12-col mdl-cell--12-col-tablet">
-				  <ol>
+				  <ul class="demo-list-item mdl-list">
 				    <display-item v-for="item in items"  v-if="item.seen" v-bind:display="item"></display-item>
-				  </ol>
+				  </ul>
 			  </div>
 			</div>
 		</div>
-	</body>
+    </div>
+  </main>
+</div>    
+
+</body>
+
 	<script type="text/javascript">
+
 	var contains = function(needle) {
 	    // Per spec, the way to identify NaN is that it is not equal to itself
 	    var findNaN = needle !== needle;
@@ -59,28 +90,57 @@
 
 		Vue.component('display-item', {
 		  props: ['display'],
-		  template: '<li>{{ display.title }}</li>'
+		  template: '<li class="mdl-list__item">{{ display.title }}</li>'
 		})
+
 
 		var app = new Vue({
 		  el: '#app',
 		  data: {
 		  	search : '',
+  	        timerStartedAt: Date.now(),
+        	timerCurrentTime: Date.now(),
+		  	title : 'Street Fighter II',
+		  	description : 'Find the characters of Street Fighter II',
+		  	cptSeen : 0,
 		    items: [
+		      { seen: false, title: 'Akuma' },
+		      { seen: false, title: 'Balrog' },
+		      { seen: false, title: 'Blanka' },
+		      { seen: false, title: 'Cammy' },
+		      { seen: false, title: 'Chun-Li' },
+		      { seen: false, title: 'Dee Jay' },
+		      { seen: false, title: 'Dhalsim' },
+		      { seen: false, title: 'Honda' },
+		      { seen: false, title: 'Guile' },
 		      { seen: false, title: 'Ken' },
+		      { seen: false, title: 'M.Bison' },
 		      { seen: false, title: 'Ryu' },
-		      { seen: false, title: 'Chun-li' }
-		    ]
+		      { seen: false, title: 'T.Hawk' },
+		      { seen: false, title: 'Vega' },
+		      { seen: false, title: 'Zangief' }
+		    ],		    
 		  },
+			created:function(){
+				var that = this;
+				window.setInterval(
+					function(){					 
+        			that.timerCurrentTime = new Date();
+    				}, 1000);	
+			},
 	      methods: {
 		    checkItems: function () {
 		    	index = contains.call(this.items, this.search);
-		    	if(index != -1){
+		    	if(index != -1 && !this.items[index].seen){
 		    		this.items[index].seen = true;
+		    		this.cptSeen++;
 		    	} else {
 		    		console.log('nay')
 		    	}
 		      this.search = ''
+		    },
+		    getTimeSeconds() {
+		        return Math.round((this.timerCurrentTime - this.timerStartedAt)/ 1000, 2);
 		    }
 		  }
 		})
