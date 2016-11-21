@@ -124,8 +124,10 @@
 			created:function(){
 				var that = this;
 				window.setInterval(
-					function(){					 
-        			that.timerCurrentTime = new Date();
+					function(){		
+						if(that.cptSeen != that.items.length){
+        					that.timerCurrentTime = new Date();
+						}			 
     				}, 1000);	
 			},
 	      methods: {
