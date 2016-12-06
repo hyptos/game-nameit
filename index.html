@@ -1,150 +1,212 @@
-<html lang="en"><head>
-        <title>Game - Name it</title>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<html lang="en">
+<head>
+    <title>Game - Name it</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-        <!-- main page styles -->
-        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-		<link rel="stylesheet" href="https://code.getmdl.io/1.2.1/material.indigo-pink.min.css">
-		<script defer src="https://code.getmdl.io/1.2.1/material.min.js"></script>
+    <!-- main page styles -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.2.1/material.indigo-pink.min.css">
+    <script defer src="https://code.getmdl.io/1.2.1/material.min.js"></script>
 
-        <!-- this needs to be loaded before guide's inline scripts -->
-       <script src="js/vue.js"></script>
-    </head>
-    <body>   
+    <!-- this needs to be loaded before guide's inline scripts -->
+    <script src="js/vue.js"></script>
+</head>
+<body>
 <!-- Always shows a header, even in smaller screens. -->
 <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
-  <header class="mdl-layout__header">
-    <div class="mdl-layout__header-row">
-      <!-- Title -->
-      <span class="mdl-layout-title">Title</span>
-      <!-- Add spacer, to align navigation to the right -->
-      <div class="mdl-layout-spacer"></div>
-      <!-- Navigation. We hide it in small screens. -->
-      <nav class="mdl-navigation mdl-layout--large-screen-only">
-        <a class="mdl-navigation__link" href="#about">about</a>
-      </nav>
+    <header class="mdl-layout__header">
+        <div class="mdl-layout__header-row">
+            <!-- Title -->
+            <span class="mdl-layout-title">Title</span>
+            <!-- Add spacer, to align navigation to the right -->
+            <div class="mdl-layout-spacer"></div>
+            <!-- Navigation. We hide it in small screens. -->
+            <nav class="mdl-navigation mdl-layout--large-screen-only">
+                <a class="mdl-navigation__link" href="#about">about</a>
+            </nav>
+        </div>
+    </header>
+    <div class="mdl-layout__drawer">
+        <span class="mdl-layout-title">Title</span>
+        <nav class="mdl-navigation">
+            <a class="mdl-navigation__link" href="#about">about</a>
+        </nav>
     </div>
-  </header>
-  <div class="mdl-layout__drawer">
-    <span class="mdl-layout-title">Title</span>
-    <nav class="mdl-navigation">
-      <a class="mdl-navigation__link" href="#about">about</a>
-    </nav>
-  </div>
-  <main class="mdl-layout__content">
-    <div class="page-content">
-    	<div id="app">
-			<div class="mdl-grid">
-			  <div class="mdl-cell  mdl-cell--12-col mdl-cell--12-col-tablet">
-			  	<h3>
-			  		{{title}}
-			  	</h3>
-			  	<p>{{description}}</p>
-			  	<p><span>{{cptSeen}} items found on {{this.items.length}} : {{getTimeSeconds()}}</span></p>
+    <main class="mdl-layout__content">
+        <div class="page-content">
+            <div id="app">
+                <div class="mdl-grid">
+                    <div class="mdl-cell  mdl-cell--12-col mdl-cell--12-col-tablet">
+                        <select class="" v-model="selected"  v-on:change="updateGame(selected)" >
+                            <option v-for="item in items"  v-bind:value="item.id">{{item.title}}</option>
+                        </select>
+                    </div>
+                    <div class="mdl-cell  mdl-cell--12-col mdl-cell--12-col-tablet">
+                        <h3>
+                            {{game.title}}
+                        </h3>
+                        <p>{{game.description}}</p>
 
-			  	  <div class="mdl-textfield mdl-js-textfield">
-    <input class="mdl-textfield__input" type="text" id="search" 					   
-    					v-model="search"
-					    v-on:keyup.enter="checkItems"
-					    placeholder="find an item">
+                        <p><span>{{game.cptSeen}} items found on {{game.data.length}} : {{getTimeSeconds()}}</span></p>
 
-    <label class="mdl-textfield__label" for="search">Text...</label>
-  </div>
-			  </div>
-			</div>			
-			<div class="mdl-grid">
-			  <div class="mdl-cell  mdl-cell--12-col mdl-cell--12-col-tablet">
-				  <ul class="demo-list-item mdl-list">
-				    <display-item v-for="item in items"  v-if="item.seen" v-bind:display="item"></display-item>
-				  </ul>
-			  </div>
-			</div>
-		</div>
-    </div>
-  </main>
-</div>    
+                        <div class="mdl-textfield mdl-js-textfield">
+                            <input class="mdl-textfield__input" type="text" id="search"
+                                   v-model="search"
+                                   v-on:keyup.enter="checkItems"
+                                   placeholder="find an item">
+
+                            <label class="mdl-textfield__label" for="search">Text...</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="mdl-grid">
+                    <div class="mdl-cell  mdl-cell--12-col mdl-cell--12-col-tablet">
+                        <ul class="demo-list-item mdl-list">
+                            <display-item v-for="item in game.data" v-if="item.seen" v-bind:display="item"></display-item>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
 
 </body>
 
-	<script type="text/javascript">
+<script type="text/javascript">
 
-	var contains = function(needle) {
-	    // Per spec, the way to identify NaN is that it is not equal to itself
-	    var findNaN = needle !== needle;
-	    var indexOf;
+    var contains = function (needle) {
+        // Per spec, the way to identify NaN is that it is not equal to itself
+        var findNaN = needle !== needle;
+        var indexOf;
 
         var i = -1, index = -1;
 
-        for(i = 0; i < this.length; i++) {
+        for (i = 0; i < this.length; i++) {
             var item = this[i];
 
-            if((findNaN && item.title !== item.title) || item.title === needle) {
+            if ((findNaN && item.title !== item.title) || item.title === needle) {
                 index = i;
                 break;
             }
         }
-        return index;	    
-	};
+        return index;
+    };
 
-		Vue.component('display-item', {
-		  props: ['display'],
-		  template: '<li class="mdl-list__item">{{ display.title }}</li>'
-		})
+    Vue.component('display-item', {
+        props: ['display'],
+        template: '<li class="mdl-list__item">{{ display.title }}</li>'
+    });
+
+    Vue.component('display-option', {
+        props: ['option'],
+        template: '<option class="" value="{{option.id}}">{{ option }}</option>'
+    });
 
 
-		var app = new Vue({
-		  el: '#app',
-		  data: {
-		  	search : '',
-  	        timerStartedAt: Date.now(),
-        	timerCurrentTime: Date.now(),
-		  	title : 'Street Fighter II',
-		  	description : 'Find the characters of Street Fighter II',
-		  	cptSeen : 0,
-		    items: [
-		      { seen: false, title: 'Akuma' },
-		      { seen: false, title: 'Balrog' },
-		      { seen: false, title: 'Blanka' },
-		      { seen: false, title: 'Cammy' },
-		      { seen: false, title: 'Chun-Li' },
-		      { seen: false, title: 'Dee Jay' },
-		      { seen: false, title: 'Dhalsim' },
-		      { seen: false, title: 'Honda' },
-		      { seen: false, title: 'Guile' },
-		      { seen: false, title: 'Ken' },
-		      { seen: false, title: 'M.Bison' },
-		      { seen: false, title: 'Ryu' },
-		      { seen: false, title: 'T.Hawk' },
-		      { seen: false, title: 'Vega' },
-		      { seen: false, title: 'Zangief' }
-		    ],		    
-		  },
-			created:function(){
-				var that = this;
-				window.setInterval(
-					function(){		
-						if(that.cptSeen != that.items.length){
-        					that.timerCurrentTime = new Date();
-						}			 
-    				}, 1000);	
-			},
-	      methods: {
-		    checkItems: function () {
-		    	index = contains.call(this.items, this.search);
-		    	if(index != -1 && !this.items[index].seen){
-		    		this.items[index].seen = true;
-		    		this.cptSeen++;
-		    	} else {
-		    		console.log('nay')
-		    	}
-		      this.search = ''
-		    },
-		    getTimeSeconds() {
-		        return Math.round((this.timerCurrentTime - this.timerStartedAt)/ 1000, 2);
-		    }
-		  }
-		})
-	</script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+            search: '',
+            game:{},
+            selected:'street_fighter_ii',
+            items:[
+                {
+                    id: 'street_fighter_ii',
+                    title: 'Street Fighter II',
+                    description: 'Find the characters of Street Fighter II',
+                    cptSeen: 0,
+                    timerStartedAt: Date.now(),
+                    timerCurrentTime: Date.now(),
+                    data:[
+                        {seen: false, title: 'Akuma'},
+                        {seen: false, title: 'Balrog'},
+                        {seen: false, title: 'Blanka'},
+                        {seen: false, title: 'Cammy'},
+                        {seen: false, title: 'Chun-Li'},
+                        {seen: false, title: 'Dee Jay'},
+                        {seen: false, title: 'Dhalsim'},
+                        {seen: false, title: 'Honda'},
+                        {seen: false, title: 'Guile'},
+                        {seen: false, title: 'Ken'},
+                        {seen: false, title: 'M.Bison'},
+                        {seen: false, title: 'Ryu'},
+                        {seen: false, title: 'T.Hawk'},
+                        {seen: false, title: 'Vega'},
+                        {seen: false, title: 'Zangief'}
+                    ]
+                },
+                {
+                    id: 'street_fighter_iii',
+                    title: 'Street Fighter III',
+                    description: 'Find the characters of Street Fighter III',
+                    cptSeen: 0,
+                    timerStartedAt: Date.now(),
+                    timerCurrentTime: Date.now(),
+                    data:[
+                        {seen: false, title: 'Akuma'},
+                        {seen: false, title: 'Ryu'},
+                        {seen: false, title: 'Chun-Li'},
+                        {seen: false, title: 'Gill'},
+                        {seen: false, title: 'Urien'},
+                        {seen: false, title: 'Ken'},
+                        {seen: false, title: 'Shin Akuma'},
+                        {seen: false, title: 'Ibuki'},
+                        {seen: false, title: 'Alex'},
+                        {seen: false, title: 'Oro'},
+                        {seen: false, title: 'Q'},
+                        {seen: false, title: 'Sean'},
+                        {seen: false, title: 'Elena'},
+                        {seen: false, title: 'Hugo'},
+                        {seen: false, title: 'Makoto'},
+                        {seen: false, title: 'Necro'},
+                        {seen: false, title: 'Dudley'},
+                        {seen: false, title: 'Twelve'},
+                        {seen: false, title: 'Yun'},
+                        {seen: false, title: 'Remy'},
+                        {seen: false, title: 'Yang'},
+                    ]
+                }
+            ],
+        },
+        created: function () {
+            this.game = this.items[0]
+            var that = this.items[0];
+            if(that) {
+                window.setInterval(
+                    function () {
+                        if (that.cptSeen != that.data.length) {
+                            that.timerCurrentTime = new Date();
+                        }
+                    }, 1000);
+            }
+        },
+        methods: {
+            checkItems: function () {
+                index = contains.call(this.game.data, this.search);
+                if (index != -1 && !this.game.data[index].seen) {
+                    this.game.data[index].seen = true;
+                    this.game.cptSeen++;
+                } else {
+                    console.log('nay')
+                }
+                this.search = ''
+            },
+            updateGame: function(id){
+
+                for(var i = 0; i < this.items.length;i++) {
+                    var item = this.items[i];
+                    if(item.id === id) {
+                        this.game = item;
+                    }
+                }
+            },
+            getTimeSeconds: function () {
+                return Math.round((this.game.timerCurrentTime - this.game.timerStartedAt) / 1000, 2);
+            }
+        }
+    })
+</script>
 </html>
