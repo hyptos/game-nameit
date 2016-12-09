@@ -12,60 +12,70 @@
 
     <!-- this needs to be loaded before guide's inline scripts -->
     <script src="js/vue.js"></script>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<!-- Always shows a header, even in smaller screens. -->
-<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
-    <header class="mdl-layout__header">
+<!-- Uses a header that scrolls with the text, rather than staying
+  locked at the top -->
+<div class="mdl-layout mdl-js-layout">
+    <header class="mdl-layout__header mdl-layout__header--scroll">
         <div class="mdl-layout__header-row">
             <!-- Title -->
             <span class="mdl-layout-title">Title</span>
             <!-- Add spacer, to align navigation to the right -->
             <div class="mdl-layout-spacer"></div>
-            <!-- Navigation. We hide it in small screens. -->
-            <nav class="mdl-navigation mdl-layout--large-screen-only">
-                <a class="mdl-navigation__link" href="#about">about</a>
+            <!-- Navigation -->
+            <nav class="mdl-navigation">
+                <a class="mdl-navigation__link" href="">Link</a>
+                <a class="mdl-navigation__link" href="">Link</a>
+                <a class="mdl-navigation__link" href="">Link</a>
+                <a class="mdl-navigation__link" href="">Link</a>
             </nav>
         </div>
     </header>
     <div class="mdl-layout__drawer">
         <span class="mdl-layout-title">Title</span>
         <nav class="mdl-navigation">
-            <a class="mdl-navigation__link" href="#about">about</a>
+            <a class="mdl-navigation__link" href="">Link</a>
+            <a class="mdl-navigation__link" href="">Link</a>
+            <a class="mdl-navigation__link" href="">Link</a>
+            <a class="mdl-navigation__link" href="">Link</a>
         </nav>
     </div>
     <main class="mdl-layout__content">
         <div class="page-content">
-            <div id="app">
-                <div class="mdl-grid">
-                    <div class="mdl-cell  mdl-cell--12-col mdl-cell--12-col-tablet">
-                        <select class="" v-model="selected"  v-on:change="updateGame(selected)" >
-                            <option v-for="item in items"  v-bind:value="item.id">{{item.title}}</option>
-                        </select>
-                    </div>
-                    <div class="mdl-cell  mdl-cell--12-col mdl-cell--12-col-tablet">
-                        <h3>
-                            {{game.title}}
-                        </h3>
-                        <p>{{game.description}}</p>
+            <div class="page-content">
+                <div id="app">
+                    <div class="mdl-grid">
+                        <div class="mdl-cell  mdl-cell--12-col mdl-cell--12-col-tablet">
+                            <select class="" v-model="selected"  v-on:change="updateGame(selected)" >
+                                <option v-for="item in items"  v-bind:value="item.id">{{item.title}}</option>
+                            </select>
+                        </div>
+                        <div class="mdl-cell  mdl-cell--12-col mdl-cell--12-col-tablet">
+                            <h3>
+                                {{game.title}}
+                            </h3>
+                            <p>{{game.description}}</p>
 
-                        <p><span>{{game.cptSeen}} items found on {{game.data.length}} : {{getTimeSeconds()}}</span></p>
+                            <p><span>{{game.cptSeen}} items found on {{game.data.length}} : {{getTimeSeconds()}}</span></p>
 
-                        <div class="mdl-textfield mdl-js-textfield">
-                            <input class="mdl-textfield__input" type="text" id="search"
-                                   v-model="search"
-                                   v-on:keyup.enter="checkItems"
-                                   placeholder="find an item">
+                            <div class="mdl-textfield mdl-js-textfield">
+                                <input class="mdl-textfield__input" type="text" id="search"
+                                       v-model="search"
+                                       v-on:keyup.enter="checkItems"
+                                       placeholder="find an item">
 
-                            <label class="mdl-textfield__label" for="search">Text...</label>
+                                <label class="mdl-textfield__label" for="search">Text...</label>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="mdl-grid">
-                    <div class="mdl-cell  mdl-cell--12-col mdl-cell--12-col-tablet">
-                        <ul class="demo-list-item mdl-list">
-                            <display-item v-for="item in game.data" v-if="item.seen" v-bind:display="item"></display-item>
-                        </ul>
+                    <div class="mdl-grid">
+                        <div class="mdl-cell  mdl-cell--12-col mdl-cell--12-col-tablet">
+                            <ul class="demo-list-item mdl-list">
+                                <display-item v-for="item in game.data" v-if="item.seen" v-bind:display="item"></display-item>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
